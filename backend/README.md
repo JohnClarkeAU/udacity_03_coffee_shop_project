@@ -8,15 +8,32 @@
 
 Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
 
-#### Virtual Enviornment
+Note that this project should be run using Python 3.7 (not the latest version)
 
-We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organaized. Instructions for setting up a virual enviornment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+#### Virtual Environment
+
+We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organized. Instructions for setting up a virual enviornment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+
+On Windows 
+
+check that pip is installed
+
+```bash
+py -m pip --version
+pip 20.1.1 from F:\Program Files\Python3.7.9\lib\site-packages\pip (python 3.7)
+```
+set up your virtual environment for the project and create a venv directory 
+
+```bash
+py -m venv venv
+```
 
 #### PIP Dependencies
 
 Once you have your virtual environment setup and running, install dependencies by naviging to the `/backend` directory and running:
 
 ```bash
+cd backend
 pip install -r requirements.txt
 ```
 

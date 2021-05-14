@@ -1,11 +1,9 @@
 import json
-from flask import request, abort, _request_ctx_stack
+from flask import request, _request_ctx_stack
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
-import ssl
-ssl._create_default_https_context = ssl._create_unverified_context
 
 AUTH0_DOMAIN = 'johnatborpa.au.auth0.com'
 ALGORITHMS = ['RS256']
@@ -71,7 +69,6 @@ def get_token_auth_header():
     print('C')
     # return the token part of the header
     token = parts[1]
-    print(token)
     return token
 
 '''
@@ -136,23 +133,6 @@ def verify_decode_jwt(token):
             }
     print('c')
     if rsa_key:
-
-        algorithms=ALGORITHMS
-        audience=API_AUDIENCE
-        issuer='https://' + AUTH0_DOMAIN + '/'
-
-        ### DEBUGGING
-        print('#### ABOUT TO jwt.decode()')
-        print('token:',token)
-        print('rsa_key:', rsa_key)
-        print('algorithms:',algorithms)
-        print('audience:',audience)
-        print('issuer:',issuer)
-
-        print('#### ABOUT TO jwt.decode()')
-        ### DEBUGGING
-
-
         try:
             payload = jwt.decode(
                 token,
@@ -161,14 +141,6 @@ def verify_decode_jwt(token):
                 audience=API_AUDIENCE,
                 issuer='https://' + AUTH0_DOMAIN + '/'
             )
-
-            # payload = jwt.decode(
-            #     token,
-            #     rsa_key,
-            #     algorithms,
-            #     audience,
-            #     issuer
-            # )
 
             return payload
 
@@ -211,47 +183,10 @@ def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            try:
-                token = get_token_auth_header()
-                print('D')
-                payload = verify_decode_jwt(token)
-                print('E')
-            except:
-                print('F')
-                abort(401)
-            print('G')
+            token = get_token_auth_header()
+            payload = verify_decode_jwt(token)
             check_permissions(permission, payload)
-            print('H')
             return f(payload, *args, **kwargs)
 
         return wrapper
     return requires_auth_decorator
-
-
-
-
-# # ORIGINAL START
-# def requires_auth(permission=''):
-#     def requires_auth_decorator(f):
-#         @wraps(f)
-#         def wrapper(*args, **kwargs):
-#             token = get_token_auth_header()
-#             payload = verify_decode_jwt(token)
-#             check_permissions(permission, payload)
-#             return f(payload, *args, **kwargs)
-
-#         return wrapper
-#     return requires_auth_decorator
-# # ORIGINAL END
-
-# def requires_auth(f):
-#     @wraps(f)
-#     def wrapper(*args, **kwargs):
-#         token = get_token_auth_header()
-#         try:
-#             payload = verify_decode_jwt(token)
-#         except:
-#             abort(401)
-#         return f(payload, *args, **kwargs)
-
-#     return wrapper
