@@ -60,6 +60,8 @@ GET /drinks-detail
     response contains  the drink.long() data representation
 returns 
     status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
+    status code 400 if there are no permissions in the JWT
+    status code 401 if the user does not have permission to do this transaction
     status code 404 if there are no drinks
     status code 422 if there is a database error
 '''
@@ -67,18 +69,6 @@ returns
 @app.route('/drinks-detail', methods=['GET'])
 @requires_auth('get:drinks-detail')
 def drinks_detail(jwt):
-    # # # SIMPLIFIED TESTING CODE START
-    # # get the short form of the drinks list
-    # all_drinks = Drink.query.all()
-    # drinks = [drink.long() for drink in all_drinks]
-    # return jsonify({
-    #     'success': True,
-    #     'drinks': drinks
-    # }), 200
-    # # # SIMPLIFIED TESTING CODE START
-    
-    
-    # ACTUAL CODE REQD START
     print('GET /drinks_detail')
     # get all the drinks
     try:
@@ -97,8 +87,6 @@ def drinks_detail(jwt):
         'success': True,
         'drinks': drinks
     }), 200
-    # ACTUAL CODE REQD END
-
 
 '''
 POST /drinks
@@ -108,6 +96,8 @@ POST /drinks
 returns 
     status code 200 and json {"success": True, "drinks": drink} where drink is an array containing only the newly created drink
     status code 400 if there is an error in the submitted data
+    status code 400 if there are no permissions in the JWT
+    status code 401 if the user does not have permission to do this transaction
     status code 422 if there is a database error
 '''
 
@@ -156,11 +146,6 @@ def drinks_create(jwt):
         'drinks': [drink.long()]
     }), 200
 
-    # except Exception as e:
-    #     # need to improve the error returned
-    #     print(e)
-    #     abort(400)
-
 '''
 PATCH /drinks/<id>
     where <id> is the existing model id
@@ -171,12 +156,10 @@ PATCH /drinks/<id>
 returns 
     status code 200 and json {"success": True, "drinks": drink} where drink is an array containing only the updated drink
     status code 400 if there is an error in the submitted data
+    status code 400 if there are no permissions in the JWT
+    status code 401 if the user does not have permission to do this transaction
     status code 404 if <id> is not found in the database
     status code 422 if there is a database error
-
-
-returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
-    or appropriate status code indicating reason for failure
 '''
 @app.route('/drinks/<int:id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
@@ -232,12 +215,14 @@ DELETE /drinks/<id>
     responds with a 404 error if <id> is not found
 returns 
     status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
+    status code 400 if there are no permissions in the JWT
+    status code 401 if the user does not have permission to do this transaction
     status code 404 if <id> is not found in the database
     status code 422 if there is a database error
 '''
 @app.route('/drinks/<int:id>', methods=['DELETE'])
 @requires_auth('delete:drinks')
-def drinks_delete(id):
+def drinks_delete(jwt, id):
     print('DELETE/drinks/', id)
 
     # get the drink to be deleted
@@ -281,10 +266,14 @@ def drinks_delete(id):
 
 ## Error Handling
 
-'''
-@TODO implement error handler for AuthError
-    error handler should conform to general task above 
-'''
+@app.errorhandler(AuthError)
+def handle_auth_error_json(error):
+    # print('AuthError:',error)
+    return jsonify({
+        "success": False,
+        "error": error.status_code,
+        "message": str(error.error['description'])
+    }), error.status_code
 
 @app.errorhandler(400)
 def bad_request_error_json(error):
@@ -333,5 +322,3 @@ def internal_error_json(error):
         "error": 500,
         "message": "Internal Error"
     }), 500
-
-
