@@ -41,7 +41,7 @@ def index():
     Returns
         status code 200 and the html text 'Welcome to the Coffee Shop'
     '''
-    return 'Welcome to the Coffee Shop'
+    return 'Welcome to the Coffee Shop\n'
 
 
 @app.route('/drinks', methods=['GET'])

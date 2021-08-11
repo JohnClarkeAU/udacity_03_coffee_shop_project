@@ -21,13 +21,13 @@ API_AUDIENCE = os.getenv('API_AUDIENCE', 'coffeeshop')
 ALGORITHM = os.getenv('ALGORITHM', 'RS256')
 ALGORITHMS = [ALGORITHM]
 
-# ### DEBUGGING START
-logger.debug('#### ABOUT TO SHOW ENVIRONMENT VARIABLES START')
-logger.debug('algorithms:%s:', ALGORITHMS)
-logger.debug('audience:%s:', API_AUDIENCE)
-logger.debug('domain:%s:', AUTH0_DOMAIN)
-logger.debug('#### ABOUT TO SHOW ENVIRONMENT VARIABLES END')
-# ### DEBUGGING END
+# # ### DEBUGGING START
+# logger.debug('#### ABOUT TO SHOW ENVIRONMENT VARIABLES START')
+# logger.debug('algorithms:%s:', ALGORITHMS)
+# logger.debug('audience:%s:', API_AUDIENCE)
+# logger.debug('domain:%s:', AUTH0_DOMAIN)
+# logger.debug('#### ABOUT TO SHOW ENVIRONMENT VARIABLES END')
+# # ### DEBUGGING END
 
 
 class AuthError(Exception):

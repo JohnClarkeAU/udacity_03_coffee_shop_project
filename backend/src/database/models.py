@@ -40,6 +40,11 @@ def db_drop_and_create_all():
         recipe='[{"name": "coffee", "color": "black", "parts": 1},{"name": "milk", "color": "white", "parts": 3}]'
     )
     drink.insert()
+    drink2 = Drink(
+        title='White Coffee2',
+        recipe='[{"name": "coffee2", "color": "black2", "parts": 2},{"name": "milk2", "color": "white2", "parts": 4}]'
+    )
+    drink2.insert()
 
 def db_rollback():
     '''
